@@ -9,10 +9,11 @@
 #include <QObject>
 #include <QtCore/QCoreApplication>
 
+#define LEFT 28
+#define RIGHT 29
 #define UP 30
 #define DOWN 31
-#define RIGHT 29
-#define LEFT 28
+
 
 #define FACTOR 3.0/4.0
 #define TITLE 20

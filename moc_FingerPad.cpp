@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'FingerPad.h'
 **
-** Created: Tue Mar 19 04:59:44 2013
+** Created: Tue Mar 19 16:56:53 2013
 **      by: The Qt Meta Object Compiler version 63 (Qt 4.8.4)
 **
 ** WARNING! All changes made in this file will be lost!

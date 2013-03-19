@@ -12,24 +12,40 @@
 #include <QShortcut>
 
 #ifdef _WIN32
-
+// not sure how to do this on windows
 #elif __APPLE__
 #define MOVE(a) \
-std::stringstream ss; \
-ss << "osascript -e \"tell application \\\"System Events\\\" to keystroke (ASCII character " << a << ")\""; \
-system(ss.str().c_str());
-
+ss << "osascript -e \"tell application \\\"System Events\\\" to key "; \
+if (a<5){ ss <<"up"; justmoved[a-1] = false; a+=27; } else {ss << "down"; justmoved[a-28] = true;} \
+ss << " (ASCII character " << a << ")\""; 
 #elif __linux
-// linux
+#define MOVE(a) \
+ss << "xdotool key"; \
+ \
+switch (keycode) \
+{ \
+    case UP: ss << "down Up"; break; \
+    case DOWN: ss << "down Down"; break; \
+    case LEFT: ss << "down Left"; break; \
+    case RIGHT: ss <<"down Right"; break; \
+    case 4: ss <<"up Down"; break; \
+    case 3: ss <<"up Up"; break; \
+    case 2: ss <<"up Right"; break;\
+    case 1: ss << "up Left"; break; \
+    default: \
+        system("xdotool keyup Up;xdotool keyup Left;xdotool keyup Right;xdotool keyup Down"); \
+        return; \
+}
 #elif __unix // all unices not caught above
 // Unix
 #elif __posix
 // POSIX
 #endif
 
-QMainWindow* ptr;
-QPushButton* btnptr;
-bool listen;
+QMainWindow* ptr;  // pointer to the window
+QPushButton* btnptr;  // pointer to the button
+bool listen;  // true when "enable fingerpad" is true
+bool justmoved[4] = {true, true, true, true}; // true just after moving
 
 void QNew::runThis()
 {
@@ -53,13 +69,18 @@ void QNew::runThis()
 
 void move(int keycode)
 {
-//    std::stringstream ss;
+    std::stringstream ss;
+   
 //
 //    ss << "osascript -e \"tell application \\\"System Events\\\" to keystroke (ASCII character " << keycode << ")\"";
 //    ss << keycode;
     
-    // os x
+    if ( keycode>5 || justmoved[keycode-1])
+    {
     MOVE(keycode);
+    
+    system(ss.str().c_str());
+    }
 //    btnptr->setText(ss.str().c_str());
     
 }
@@ -91,23 +112,33 @@ void *loop ( void *)
             int righ_outer = left_outer + ptr->width();
             int righ_inner = left_outer + (FACTOR) * ptr->width();
             
-            //down
-            if (p.y() < bot_outer && p.y() > bot_inner && p.x() < ptr->x()+ptr->width() && p.x() > ptr->x())
-                move(DOWN);
+
             
-            //up
-             if (p.y() > top_outer && p.y() < top_inner && p.x() < ptr->x()+ptr->width() && p.x() > ptr->x())
-                move(UP);
-            
-            //right
-            if (p.x() < righ_outer && p.x() > righ_inner && p.y() < ptr->y()+ptr->height() && p.y() > ptr->y())
-                move(RIGHT);
+            move(1);
             
             //left
             if (p.x() > left_outer && p.x() < left_inner && p.y() < ptr->y()+ptr->height() && p.y() > ptr->y())
                 move(LEFT);
             
-//            else move(0);
+            move(2);
+            
+            //right
+            if (p.x() < righ_outer && p.x() > righ_inner && p.y() < ptr->y()+ptr->height() && p.y() > ptr->y())
+                move(RIGHT);
+            
+            move(3);
+
+            //up
+            if (p.y() > top_outer && p.y() < top_inner && p.x() < ptr->x()+ptr->width() && p.x() > ptr->x())
+                move(UP);
+            
+            move(4);
+
+            //down
+            if (p.y() < bot_outer && p.y() > bot_inner && p.x() < ptr->x()+ptr->width() && p.x() > ptr->x())
+                move(DOWN);
+            
+ 
             
             
             //         if (p.y() > ptr->y() && p.y() < (4/3)*(ptr->y()))
