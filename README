@@ -1,0 +1,10 @@
+FingerPad!
+
+An effort to replace the need to fiddle with the small and insignificant arrow keys when trying to accomplish simple tasks that require them.
+
+HOW TO USE:
+
+Position the Fingerpad window over the area where you want the pad to be.
+Then hit "enable." Once enabled, if you move your mouse to the top quarter of the screen, an up arrow key will be sent. Bottom corner, down arrow key, left and right behave the same way too.
+
+For now, the space key can be used to minimize the application. When minimized, the areas that you stretched it over are still hot spots. In this manner, you can stretch the Fingerpad over an application, and then use only the mouse to move up down left and right.

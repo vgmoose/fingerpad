@@ -14,7 +14,7 @@
 #define RIGHT 29
 #define LEFT 28
 
-#define FACTOR 6/8.0
+#define FACTOR 3.0/4.0
 #define TITLE 20
 
 
@@ -28,8 +28,8 @@ class QNew : public QMainWindow
     
 public:
     explicit QNew(QWidget *parent = 0);
-    
     public slots:
     void runThis();
+    
 };
 
