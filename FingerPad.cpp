@@ -16,7 +16,7 @@
 #elif __APPLE__
 #define MOVE(a) \
 ss << "osascript -e \"tell application \\\"System Events\\\" to key "; \
-if (a<5){ ss <<"up"; justmoved[a-1] = false; a+=27; } else {ss << "down"; justmoved[a-28] = true;} \
+if (a<5){ ss <<"up"; a+=27; } else {ss << "down";} \
 ss << " (ASCII character " << a << ")\""; 
 #elif __linux
 #define MOVE(a) \
@@ -75,12 +75,36 @@ void move(int keycode)
 //    ss << "osascript -e \"tell application \\\"System Events\\\" to keystroke (ASCII character " << keycode << ")\"";
 //    ss << keycode;
     
-    if ( keycode>5 || justmoved[keycode-1])
+    if (keycode>5 && !justmoved[keycode-28])
     {
-    MOVE(keycode);
+        std::cout << "keydown " << keycode-28;
+        justmoved[keycode-28] = true;
+        MOVE(keycode);
+        std::cout << " " << ss.str().c_str() << "\n";
+    }
+    
+    if (keycode<=5 && justmoved[keycode-1])
+    {
+        std::cout << "keyup " << keycode-1;
+        justmoved[keycode-1] = false;
+        MOVE(keycode);
+        std::cout << " " << ss.str().c_str() << "\n";
+
+    }
     
     system(ss.str().c_str());
-    }
+
+    
+//    if ( (keycode>5 && justmoved[keycode-28]) || (keycode<=5 && !justmoved[keycode-1]))
+//    {
+//        MOVE(keycode);
+//        
+//        std::cout << ss.str();
+//    
+//        system(ss.str().c_str());
+//    }
+    
+    
 //    btnptr->setText(ss.str().c_str());
     
 }
@@ -114,31 +138,34 @@ void *loop ( void *)
             
 
             
-            move(1);
             
             //left
             if (p.x() > left_outer && p.x() < left_inner && p.y() < ptr->y()+ptr->height() && p.y() > ptr->y())
                 move(LEFT);
+            else
+                move(1);
             
-            move(2);
             
             //right
             if (p.x() < righ_outer && p.x() > righ_inner && p.y() < ptr->y()+ptr->height() && p.y() > ptr->y())
                 move(RIGHT);
+            else
+                move(2);
             
-            move(3);
+
 
             //up
             if (p.y() > top_outer && p.y() < top_inner && p.x() < ptr->x()+ptr->width() && p.x() > ptr->x())
                 move(UP);
+            else
+                move(3);
             
-            move(4);
 
             //down
             if (p.y() < bot_outer && p.y() > bot_inner && p.x() < ptr->x()+ptr->width() && p.x() > ptr->x())
                 move(DOWN);
-            
- 
+            else
+                move(4);
             
             
             //         if (p.y() > ptr->y() && p.y() < (4/3)*(ptr->y()))
@@ -154,7 +181,7 @@ void *loop ( void *)
         else
         {
             std::cout << "";
-//            move(0);
+
         }
 
         
